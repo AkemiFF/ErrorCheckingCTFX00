@@ -34,7 +34,7 @@ function toCompute()
       <div class="card-body">
 
         <!-- form -->
-        <form action="/calculator.php" method="POST">
+        <form action="/8887/calculator.php" method="POST">
           <div class="form-group">
             <label>Online Calculator</label>
             <input type="text" class="form-control" name="calcul">
