@@ -1,6 +1,8 @@
-from django.http import JsonResponse
+import requests
+from django.http import HttpResponse, JsonResponse
 # Create your views here.
 from django.shortcuts import get_object_or_404, render
+from django.views.decorators.csrf import csrf_exempt
 
 from utils.docker_manager import DockerManager
 
@@ -22,12 +24,21 @@ def start_challenge(request, challenge_id):
     return JsonResponse({'error': 'Failed to start challenge.'}, status=500)
 
 
-# def test(request):
-#     container = docker_manager.start_container('calc', 8887)
-#     if container:
-       
-#         return JsonResponse({'message': f'Challenge calc started.'})
-#     return JsonResponse({'error': 'Failed to start challenge.'}, status=500)
+def build_images(request):
+    images = ['calc', 'bruteforce']
+    existing_images = docker_manager.list_images()
+    print(existing_images)
+    
+    for image in images:
+        image_tag = f"{image}_image:latest"
+        if any(image_tag in img['tags'] for img in existing_images):
+            continue
+        
+        build = docker_manager.build_image(image, "beginner")
+        if not build:
+            return JsonResponse({'error': f'Failed to build image {image}.'}, status=500)
+    
+    return JsonResponse({'message': 'Images built successfully.'})
 
 def test(request):
     # build = docker_manager.build_image('calc', "beginner")
@@ -38,10 +49,6 @@ def test(request):
        
         return JsonResponse({'message': f'Challenge calc started.'})
     return JsonResponse({'error': 'Failed to start challenge.'}, status=500)
-
-import requests
-from django.http import HttpResponse, JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 
 
 @csrf_exempt
@@ -58,7 +65,7 @@ def proxy_to_docker(request, port,path):
                 'Content-Type': request.META.get('CONTENT_TYPE', 'application/json'),
                 'Accept': 'application/json'
             },
-            data=request.body  
+            data=request.body
         )
         
         return HttpResponse(response.content, status=response.status_code)

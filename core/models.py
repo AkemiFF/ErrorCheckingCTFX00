@@ -22,7 +22,6 @@ class Defi(models.Model):
         return self.titre
     
     def set_points(self):
-        """Attribue des points en fonction de la catégorie du défi."""
         if self.categorie == 'Debutant':
             self.points = 200
         elif self.categorie == 'Intermediaire':
