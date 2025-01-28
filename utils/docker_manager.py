@@ -65,6 +65,25 @@ class DockerManager:
             print(f"Image for {challenge_name} built successfully.")
         except DockerException as e:
             print(f"Error building image for {challenge_name}: {e}")
+            
+    def list_images(self):
+                """
+                List all Docker images.
+                :return: List of image details.
+                """
+                try:
+                    images = self.client.images.list()
+                    return [
+                        {
+                            "id": image.id,
+                            "tags": image.tags,
+                            "created": image.attrs['Created'],
+                            "size": image.attrs['Size']
+                        } for image in images
+                    ]
+                except DockerException as e:
+                    print(f"Error listing images: {e}")
+                    return []
 
     def list_containers(self):
         """
