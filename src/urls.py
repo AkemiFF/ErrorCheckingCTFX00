@@ -24,6 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('login/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('test/', test, name='test'),
+    path('build_images/', build_images, name='build_images'),
     path('stop_test/', stop_test, name='stop_test'),
     path('<int:port>/<str:path>', proxy_to_docker, name='proxy_to_docker'),
     # path('challenge/<int:challenge_id>/start/', views.start_challenge, name='start_challenge'),
